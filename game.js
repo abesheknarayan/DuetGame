@@ -5,9 +5,6 @@ var multi=document.querySelector("#multiplayer");
 var single=document.querySelector("#single");
 canvas.width=window.innerWidth*0.30;
 canvas.height=window.innerHeight;
-
-
-
 var display0=document.querySelector("#display0");
 var display1=document.querySelector("#display1");
 var display2=document.querySelector("#display2");
@@ -20,7 +17,7 @@ var storedArray=[];
 var gameover=false;
 var pausegame=false;
 var horlicks=document.querySelector("#horlicks");
-
+var flight=document.querySelector("#flight");
 var clear=document.querySelector("#clear");
 var body=document.querySelector("body");
 var user=document.querySelector("#playername");
@@ -50,12 +47,18 @@ var htime=0;
 var hhit=false;
 var hhit2=false;
 var hindex=-1;
+var findex=-1;
+var fhit=false;
+var ftime=0;
 var oindex=-1;
 var interval;
 var player;
 var player2;
 var users=[];
 var noofplayers=0;
+var rdx=0;
+var affStatus=false;
+var afftime=0;
 var row=table.insertRow(-1);
 var cell1=row.insertCell(0);
 var cell2=row.insertCell(1);
@@ -64,6 +67,134 @@ var mode2="single";
 user2.style.display="none";
 p2.style.display="none";
 var msg=document.querySelector("#msg");
+function Flight()
+{
+this.w=50;
+  this.h=50;
+  this.x=Math.floor(Math.random()*180+150);
+  this.y=0;
+  this.draw=function(){
+   c.drawImage(flight,this.x,this.y);
+  }
+  this.update=function(pos)
+{ this.pos=pos;
+  this.y+=5;
+  this.draw();
+  if(!fhit)
+  {
+    if(balls.x1+balls.br/2>this.x&&balls.x1-balls.br/2<=this.x+this.w&&balls.y1+balls.br/2>this.y&&balls.y1-balls.br<this.y+this.h)
+      {   
+        fhit=true;
+        // flights.splice(this.pos,1);
+      }
+      if(balls.x2+balls.br/2>this.x&&balls.x2-balls.br/2<=this.x+this.w&&balls.y2+balls.br/2>=this.y&&balls.y2-balls.br<=this.y+this.h)
+      {       
+        fhit=true;
+        // flights.splice(this.pos,1);
+      }
+
+  }
+  if(fhit){
+      ftime++;
+      if(ftime>300)
+      {
+        ftime=0;
+        fhit=false;
+      }
+  }
+  }
+}
+function Horlicks()
+{
+  this.w=50;
+  this.h=50;
+  this.x=Math.floor(Math.random()*180+150);
+  this.y=0;
+  this.draw=function(){
+   c.drawImage(horlicks,this.x,this.y);
+  }
+  this.update=function(pos)
+{ this.pos=pos;
+  this.y+=5;
+  this.draw();
+  
+  if(hhit==false)
+  {
+if(balls.x1+balls.br/2>this.x&&balls.x1-balls.br/2<=this.x+this.w&&balls.y1+balls.br/2>this.y&&balls.y1-balls.br<this.y+this.h)
+      {   
+    
+   
+      hhit=true;
+      // horlickspack.splice(this.pos,1);
+     // horlickspack.splice(hindex,1);
+
+
+        
+      }
+      if(balls.x2+balls.br/2>this.x&&balls.x2-balls.br/2<=this.x+this.w&&balls.y2+balls.br/2>=this.y&&balls.y2-balls.br<=this.y+this.h)
+      {       
+       // horlickspack.splice(this.pos,1);
+         //fn for double radius
+        
+        
+       
+        hhit=true;
+         // horlickspack.splice(hindex,1);
+         
+         
+
+      }
+
+}
+if(hhit)
+{
+  htime++;
+  console.log("powered");
+
+  if(htime>400)
+  {
+    htime=0;
+    hhit=false;
+    console.log("no power");
+
+
+
+  }
+}
+
+}
+}
+
+function affectionmeter()
+{ c.beginPath();
+  // var rxd=0.1;
+  // var x=0;
+  // x=x+rdx;
+   // c.fillStyle="red";
+   
+   rdx=rdx+0.1;
+  c.strokeStyle="white";
+  c.strokeRect(10,10,100,20);
+  c.stroke();
+  if(10+rdx<100)
+  { 
+   c.fillStyle="red"; 
+  c.fillRect(10,10,10+rdx,20);}
+  else
+  {
+    affStatus=true;
+    afftime++;
+
+    if(afftime>200)
+    {
+      afftime=0;
+      rdx=0;
+      affStatus=false;
+    }
+   
+  } 
+  
+}
 
 
 
@@ -228,7 +359,15 @@ function Balls(x,y,r,br)
 	this.y2=this.cy;
 	
   this.draw=function()
-  {
+  { if(hhit)
+    { this.br=30;
+    }
+    else{
+      this.br=15;
+    }
+    
+    
+
   	c.beginPath();
     c.strokeStyle="#e0ebeb";
     c.arc(this.cx,this.cy,this.r,0,Math.PI*2,false);
@@ -252,9 +391,41 @@ function Balls(x,y,r,br)
   }
 
   this.update=function()
-  { 
+  {  
+    if(fhit)
+    {
+      this.velocity=0.15;
+    }
+    else{
+      this.velocity=0.1;
+    }
   	this.draw();
-  	  if(rightkey)
+  	  if(affStatus)
+      {
+       
+      if(rightkey)
+      {
+        this.radians+=this.velocity;
+        this.radians2+=this.velocity;
+         this.x1=cx-Math.cos(this.radians)*this.r;
+         this.y1=cy-Math.sin(this.radians)*this.r;
+          this.x2=cx+Math.cos(this.radians2)*this.r;
+         this.y2=cy+Math.sin(this.radians2)*this.r;
+     }
+     if(leftkey)
+     {
+      this.radians-=this.velocity;
+        this.radians2-=this.velocity;
+         this.x1=cx-Math.cos(this.radians)*this.r;
+         this.y1=cy-Math.sin(this.radians)*this.r;
+          this.x2=cx+Math.cos(this.radians2)*this.r;
+         this.y2=cy+Math.sin(this.radians2)*this.r;       
+     }
+      }
+      else{
+
+
+      if(rightkey)
   	  {
   	    this.radians+=this.velocity;
   	    this.radians2+=this.velocity;
@@ -271,7 +442,7 @@ function Balls(x,y,r,br)
          this.y1=cy+Math.sin(this.radians)*this.r;
           this.x2=cx+Math.cos(this.radians2)*this.r;
          this.y2=cy+Math.sin(this.radians2)*this.r;     	
-     }
+     }}
  }
 }
 
@@ -302,7 +473,7 @@ function sort(users)
   this.ox=Math.floor(Math.random()*180+150);
   this.oy=0;
   this.oh=Math.floor(Math.random()*20+10);
-  	this.dy=5;
+  	this.dy=4;
   	this.acc=0.001;
   	
 
@@ -316,27 +487,33 @@ function sort(users)
        c.fill();
        
      }
-     this.update=function()
+     this.update=function(pos)
     {  this.draw();
-    
+       this.pos=pos;
     	if(balls.x1+balls.br/2>this.ox&&balls.x1-balls.br/2<=this.ox+this.ow&&balls.y1+balls.br/2>this.oy&&balls.y1-balls.br<this.oy+this.oh)
-    	{    
-    		clearInterval(interval);
+    	{   if(!hhit) 
+    		{clearInterval(interval);
 
     			console.log("collision");
     			gameover=true;
-    			over();
+    			over();}
+          else{
+            obstacles.splice(this.pos,1);
+          }
           
     		
     		
     	}
     	if(balls.x2+balls.br/2>this.ox&&balls.x2-balls.br/2<=this.ox+this.ow&&balls.y2+balls.br/2>=this.oy&&balls.y2-balls.br<=this.oy+this.oh)
-    	{ 
-    		clearInterval(interval);
+    	{ if(!hhit)
+    		{clearInterval(interval);
     			console.log("collision");
     			gameover=true;
     			over();
-         
+         }
+          else{
+            obstacles.splice(this.pos,1);
+          }
     	}
       
     	
@@ -436,7 +613,8 @@ var balls=new Balls(cx,cy,radius,br);
 
 var obstacles=[];
 var obstacles2=[];
-
+var horlickspack=[];
+var flights=[];
 
 var time=0;
 var time2=0;
@@ -463,8 +641,23 @@ c.fillRect(0,0,canvas.width,canvas.height);
 c.fill();
 
     balls.update();
+    if(time%400==0&&fhit==false)
+    {
+      flights.push(new Flight());
+    }
+    for(i=0;i<flights.length;i++)
+    {
+      flights[i].update(i);
+    }
       
-      
+      if(time%200==0&&hhit==false)
+      {
+        horlickspack.push(new Horlicks());
+      }
+      for(i=0;i<horlickspack.length;i++)
+      {
+        horlickspack[i].update(i);
+      }
 
       // i=Math.random()*100;  
       if(mode2=="single")
@@ -477,8 +670,8 @@ c.fill();
        
       }
       for(i=0;i<obstacles.length;i++)
-      {
-          obstacles[i].update();
+      {    
+          obstacles[i].update(i);
            
 
       
@@ -541,6 +734,6 @@ c.fill();
       }
     
       
-
+     affectionmeter();
 
 }
