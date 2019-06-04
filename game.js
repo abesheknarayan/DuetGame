@@ -15,6 +15,7 @@ game.style.display="none";
 var userobj={};
 var storedArray=[];
 var gameover=false;
+var gameStart=false;
 var pausegame=false;
 var horlicks=document.querySelector("#horlicks");
 var flight=document.querySelector("#flight");
@@ -261,7 +262,7 @@ function playgame()
 //  display1.style.display="none";
 //  game.style.display="";
  
- 
+ gameStart=true;
  row=table.insertRow(-1);
  cell1=row.insertCell(0);
  cell2=row.insertCell(1);
@@ -318,20 +319,22 @@ function inserttable(val1,val2)
 cell1.textContent=val1;
 cell2.textContent=val2;
 }
-pause.addEventListener("click",function()
+pause.addEventListener("click",fnpause);
+  function fnpause()
 {
 clearInterval(interval);
 pausegame=true;
 
-});
-resume.addEventListener("click",function()
+}
+resume.addEventListener("click",resume);
+ function  fnresume()
 {
 	if(pausegame==true)
 	{
 interval=setInterval(animate,20);}
 pausegame=false;
 
-});
+}
 
 for(i=0;i<newgame.length;i++)
 {
@@ -584,6 +587,24 @@ else{
  
 }
 }
+
+
+document.addEventListener("keydown",function(e){
+if(e.keyCode==32)
+{ console.log("pause pressed");
+  if(gameStart)
+  {
+  if(pausegame)
+  {
+    fnresume();
+  }
+  else
+  {
+    fnpause();
+  }
+}}
+}  );
+
 
 document.addEventListener('keydown',function(e)
 	{
