@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My first canvas try</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href="https://fonts.googleapis.com/css?family=Concert+One&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Assistant&display=swap" rel="stylesheet">
+</head>
+<body>
+	<section id="display0">
+		<h1 id="gametitle">Duet Game</h1>
+		<button id="single">Single Player</button>
+		<button id="multiplayer">Multiplayer</button>
+		
+	</section>
+	<section id="display1">
+		<label for="playername">Player 1</label><br> 
+		<input type="text" name="" id="playername"><br>
+		<label for="player2" id="p2">Player 2</label><br>
+		<input type="text" name="" id="player2">
+		<br>
+		<button id="play">Play</button>
+	</section>
+	<section id="game">
+	    <div id="scorecard">
+		<h3>Score</h3>
+		<p id="score"></p>
+		<div id="tablehead">
+	
+			<span id="tbname">Name</span>
+			<span>Score</span>
+		</div>
+		<table>
+			
+		</table>
+	   </div>
+	   <img src="horlicks.jpg" id="horlicks">
+       <canvas></canvas>
+       <div id="gameright">
+       	<button id="pause">pause</button><br>
+		<button id="resume">resume</button><br>
+		<button class="newgame">new game</button>
+       </div>
+</section>
+<section id="display2">
+    
+	<h2>Game over</h2>
+	<h2 >score </h2>
+	<span id="displayscore"></span>
+	<h3 id="score2">Player 2 score <br><span id="displayscore2"></span></h3>
+	<h2 id="multiresult"></h2>
+	
+	<div id="onep">
+	<button class="newgame">New game</button>
+	<button id="clear">Clear Scoreboard</button>
+	<span id="msg"></span>
+	</div>
+	<div id="twop">
+		<button id="p2chance">Player 2 chance</button>
+	</div>
+
+	<span id="quit"></span>
+</section>
+
+
+<script type="text/javascript" src="game.js"></script>
+</body>
+</html>
